@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: Api Banorte
+  description: "**Aqui se coloca una descripcion de la api**, ejemplo"
+  version: 1.0.0
+externalDocs:
+  description: información adicional
+  url: http://banorte.com
+servers:
+ - url: https://api.banorte/v1/
+
+tags:
+- name: clientes
+  description: este endpoint maneja toda la informacion relacionada con los datos de los clientes.
+
+paths:
+  /clientes:
+    post:
+      tags:
+      - clientes
+      summary: inserta la informacion de los nuevos clientes en el sistema.
+      parameters:
+      - $ref: '#/components/parameters/token'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyClientes_post'
+        required: true
+      responses:
+        '200':
+          description: OK. La información se guardó correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExitoClientesPost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
+  /{idCliente}:
+    get:
+      tags:
+      - clientes
+      summary: Obtiene la info de el cliente 
+      parameters:
+      - $ref: ''
+      - name: idCliente
+        in: path
+        description: identificadpr del cliente
+        required: true
+        schema:
+          type: string
+            
+      responses:
+        '200':
+          description: (ok) la informacion del cliente se obtuvo correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExitoClientesGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+              
+            
+components:
+  responses:
+    
+    Unauthorized:
+      description: ( Unauthorized ) no hay autorizacion para llamar al servicio
+    
+    NotFound:
+      description: (NotFound) no se encontro la informacion
+    
+    BadRequest:
+      description: (Bad Requests) los datos enviados no son correctos o hay datos obligatorios no enviados
+
+    ServerError:
+      description: Error en el servidor
+  
+  parameters:
+    token:
+      name: token
+      in: header
+      description: Token de autenticacion.
+      required: true
+      schema:
+        type: string
+  
+  schemas:
+    BodyClientes_post:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: nombre de usuario
+        last_name:
+          type: string
+          description: apellido 
+        age:
+          type: integer
+          description: edad de usuario
+        date:
+          type: string
+          format: date-time
+          description: fecha de registro
+          
+    ExitoClientesPost:
+      type: object
+      properties:
+        respuesta:
+          type: integer
+          enum: [1]
+          description: Bandera que nos indica si la llamada ak servicio fue exitosa
+        idCliente:
+          type: integer
+          enum: [222]
+          description: Id de el cliente registrado
+          
+    
+    ExitoClientesGet:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: nombre de usuario
+        last_name:
+          type: string
+          description: apellido 
+        age:
+          type: integer
+          description: edad de usuario
+        date:
+          type: string
+          format: date-time
+          description: fecha de registro
